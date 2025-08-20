@@ -15,7 +15,7 @@ Prescribe pragmatic patterns that keep code **fast, safe, and observable** under
 ## Inputs
 - PRD.md (canonical endpoints, SLOs, TTLs, ports, rate limits)
 - ADRs/decisions (cache TTLs, idempotency, outbox, gateway)
-- Tech stack pins (Java 17, Spring Boot 3.3, Redis 7, ES 8, Kafka/Redpanda, Nginx, Prometheus/Grafana, Jenkins/Sonar)
+- Tech stack pins (Java 21, Spring Boot 3.5, Redis 7, ES 8, Kafka/Redpanda, Nginx, Prometheus/Grafana, Jenkins/Sonar)
 
 ## Outputs
 - Code and configs that meet SLOs and pass CI.

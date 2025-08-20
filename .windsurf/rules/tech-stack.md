@@ -25,8 +25,8 @@ Pin the stack to **stable, reproducible** versions that meet PRD SLOs and simpli
 ---
 
 ## Languages & Build
-- **Java:** 17  
-- **Spring Boot:** 3.3.x  
+- **Java:** 21  
+- **Spring Boot:** 3.5.4  
 - **Maven:** 3.9+ (wrapper encouraged)
 
 ## Data Stores

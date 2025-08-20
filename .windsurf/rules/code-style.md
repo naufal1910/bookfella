@@ -2,7 +2,7 @@
 trigger: always_on
 ---
 
-# Super Sale Mini Booking API — Code Style (Java 17 / Spring Boot 3.3)
+# Super Sale Mini Booking API — Code Style (Java 21 / Spring Boot 3.5)
 
 ## Purpose
 Ensure consistent, reviewable Java code optimized for **highload APIs** and easy troubleshooting.
@@ -27,7 +27,7 @@ Ensure consistent, reviewable Java code optimized for **highload APIs** and easy
 ---
 
 ## Package & Layout
-com.example.booking
+com.bookfella.booking
 ├─ config/ # Redis, Kafka, Security, Observability, Resilience4j
 ├─ domain/ # JPA entities (Reservation), ES docs (Hotel)
 ├─ dto/ # Request/Response models
@@ -116,7 +116,7 @@ Integration optional: spring-kafka-test for outbox publish.
  ADR updated if defaults changed.
 
 ## Formatting
-UTF-8, LF; Java 17; one class per file; < 400 LOC per class preferred.
+UTF-8, LF; Java 21; one class per file; < 400 LOC per class preferred.
 
 Static imports only for assertions.
 
