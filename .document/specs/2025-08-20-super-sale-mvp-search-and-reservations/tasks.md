@@ -42,7 +42,7 @@ Spec folder: `.document/specs/2025-08-20-super-sale-mvp-search-and-reservations/
   - [x] 6.3 Implement event model and publisher triggered only after successful commit
   - [x] 6.4 Verify: Kafka test passes; topic name exact
 
-- [ ] 7. Gateway — Nginx 8081 (rate limit + cache header)
+- [x] 7. Gateway — Nginx 8081 (rate limit + cache header)
   - [x] 7.1 Test-first: Scripted smoke checks verifying `Cache-Control: public, max-age=60` on `/api/search` and rate limit behavior on POST
   - [x] 7.2 Add Nginx config:
         `limit_req_zone $binary_remote_addr zone=rez:10m rate=200r/s;`
