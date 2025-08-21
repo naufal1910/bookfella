@@ -29,8 +29,6 @@ public class ElasticsearchIndexConfig implements CommandLineRunner {
         IndexOperations indexOps = operations.indexOps(HotelDocument.class);
         if (!indexOps.exists()) {
             indexOps.create();
-            // settings: 1 shard, 0 replica for dev
-            indexOps.putSettings(Document.parse("{\"index\":{\"number_of_shards\":1,\"number_of_replicas\":0}}"));
             // mapping based on annotations
             Document mapping = indexOps.createMapping(HotelDocument.class);
             indexOps.putMapping(mapping);
