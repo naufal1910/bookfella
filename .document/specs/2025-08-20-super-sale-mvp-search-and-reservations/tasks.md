@@ -2,24 +2,24 @@
 
 Spec folder: `.document/specs/2025-08-20-super-sale-mvp-search-and-reservations/`
 
-- [ ] 1. Project scaffolding and base configs (Java 17, Spring Boot 3.3)
-  - [ ] 1.1 Test-first: Add a `@WebMvcTest` health check test for `/api/health` returns 200
-  - [ ] 1.2 Initialize Maven wrapper and Spring Boot project; add dependencies: Web, Validation, Data JPA, Data Redis, Data Elasticsearch, Spring for Kafka, Micrometer Prometheus, Resilience4j, Test libs
-  - [ ] 1.3 Create package layout per code-style (`config/`, `domain/`, `dto/`, `repo/`, `service/`, `web/`, `util/`)
-  - [ ] 1.4 Configure ports: app 8080; confirm `/actuator/prometheus` exposed
-  - [ ] 1.5 Verify: `mvn -q -DskipTests=false verify` passes and health test green
+- [x] 1. Project scaffolding and base configs (Java 21, Spring Boot 3.5.4)
+  - [x] 1.1 Test-first: Add a `@WebMvcTest` health check test for `/api/health` returns 200
+  - [x] 1.2 Initialize Maven wrapper and Spring Boot project; add dependencies: Web, Validation, Data JPA, Data Redis, Data Elasticsearch, Spring for Kafka, Micrometer Prometheus, Resilience4j, Test libs
+  - [x] 1.3 Create package layout per code-style (`config/`, `domain/`, `dto/`, `repo/`, `service/`, `web/`, `util/`)
+  - [x] 1.4 Configure ports: app 8080; confirm `/actuator/prometheus` exposed
+  - [x] 1.5 Verify: `mvn -q -DskipTests=false verify` passes and health test green
 
-- [ ] 2. Data model & persistence (Oracle-aligned; H2 Oracle mode for dev)
-  - [ ] 2.1 Test-first: `@DataJpaTest` saves and fetches a `Reservation` entity; validate column mappings
-  - [ ] 2.2 Create `RESERVATIONS` table via schema.sql; include index `IDX_RES_HOTEL (HOTEL_ID, CHECK_IN, CHECK_OUT)`
-  - [ ] 2.3 Implement JPA `Reservation` entity and `ReservationRepository`
-  - [ ] 2.4 Configure H2 in Oracle mode and datasource props
-  - [ ] 2.5 Verify: Data JPA tests pass; index present in schema script
+- [x] 2. Data model & persistence (Oracle-aligned; H2 Oracle mode for dev)
+  - [x] 2.1 Test-first: `@DataJpaTest` saves and fetches a `Reservation` entity; validate column mappings
+  - [x] 2.2 Create `RESERVATIONS` table via schema.sql; include index `IDX_RES_HOTEL (HOTEL_ID, CHECK_IN, CHECK_OUT)`
+  - [x] 2.3 Implement JPA `Reservation` entity and `ReservationRepository`
+  - [x] 2.4 Configure H2 in Oracle mode and datasource props
+  - [x] 2.5 Verify: Data JPA tests pass; index present in schema script
 
 - [ ] 3. Elasticsearch hotels index (mapping + client + seed)
-  - [ ] 3.1 Test-first: Service unit test verifies ES query → returns mapped `Hotel` DTOs (mock ES client)
-  - [ ] 3.2 Define ES mapping: `name text+keyword`, `city keyword`, `tags keyword`, `priceFrom scaled_float`
-  - [ ] 3.3 Configure ES 8 client and index bootstrap; seed sample hotels
+  - [x] 3.1 Test-first: Service unit test verifies ES query → returns mapped `Hotel` DTOs (mock ES client)
+  - [x] 3.2 Define ES mapping: `name text+keyword`, `city keyword`, `tags keyword`, `priceFrom scaled_float`
+  - [x] 3.3 Configure ES 8 client and index bootstrap; seed sample hotels
   - [ ] 3.4 Verify: Smoke query returns seeded results
 
 - [ ] 4. Search API — GET `/api/search` with Redis cache-aside (TTL 60s)
