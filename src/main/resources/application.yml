@@ -14,3 +14,18 @@ management:
   metrics:
     tags:
       application: booking
+
+resilience4j:
+  retry:
+    instances:
+      es:
+        max-attempts: 3
+        wait-duration: 200ms
+  circuitbreaker:
+    instances:
+      es:
+        failure-rate-threshold: 50
+        sliding-window-type: COUNT_BASED
+        sliding-window-size: 50
+        permitted-number-of-calls-in-half-open-state: 5
+        wait-duration-in-open-state: 10s

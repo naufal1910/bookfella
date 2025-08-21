@@ -23,11 +23,11 @@ Spec folder: `.document/specs/2025-08-20-super-sale-mvp-search-and-reservations/
   - [ ] 3.4 Verify: Smoke query returns seeded results
 
 - [ ] 4. Search API — GET `/api/search` with Redis cache-aside (TTL 60s)
-  - [ ] 4.1 Test-first: `@WebMvcTest` returns 400 if neither `q` nor `city` provided; 200 happy path
-  - [ ] 4.2 Slice/unit tests for cache: one test ensures cache miss → ES fetch → cache set; another ensures cache hit bypasses ES
-  - [ ] 4.3 Implement `SearchService` with keys `search:q:{normalized}` and `search:city:{city}`, TTL=60s; page size ≤20; normalization util
-  - [ ] 4.4 Add Resilience4j Retry(3) + CircuitBreaker(50/50) around ES calls
-  - [ ] 4.5 Verify: Tests pass; confirm TTL=60s explicitly in code; metrics timer for `/api/search`
+  - [x] 4.1 Test-first: `@WebMvcTest` returns 400 if neither `q` nor `city` provided; 200 happy path
+  - [x] 4.2 Slice/unit tests for cache: one test ensures cache miss → ES fetch → cache set; another ensures cache hit bypasses ES
+  - [x] 4.3 Implement `SearchService` with keys `search:q:{normalized}` and `search:city:{city}`, TTL=60s; page size ≤20; normalization util
+  - [x] 4.4 Add Resilience4j Retry(3) + CircuitBreaker(50/50) around ES calls
+  - [x] 4.5 Verify: Tests pass; confirm TTL=60s explicitly in code; metrics timer for `/api/search`
 
 - [ ] 5. Reservations API — POST `/api/reservations` (idempotent) and GET by id
   - [ ] 5.1 Test-first: `@WebMvcTest` enforces `Idempotency-Key` header and Bean Validation on DTO; returns 409 on duplicate key
