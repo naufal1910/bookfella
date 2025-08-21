@@ -16,13 +16,13 @@ Spec folder: `.document/specs/2025-08-20-super-sale-mvp-search-and-reservations/
   - [x] 2.4 Configure H2 in Oracle mode and datasource props
   - [x] 2.5 Verify: Data JPA tests pass; index present in schema script
 
-- [ ] 3. Elasticsearch hotels index (mapping + client + seed)
+- [x] 3. Elasticsearch hotels index (mapping + client + seed)
   - [x] 3.1 Test-first: Service unit test verifies ES query → returns mapped `Hotel` DTOs (mock ES client)
   - [x] 3.2 Define ES mapping: `name text+keyword`, `city keyword`, `tags keyword`, `priceFrom scaled_float`
   - [x] 3.3 Configure ES 8 client and index bootstrap; seed sample hotels
-  - [ ] 3.4 Verify: Smoke query returns seeded results
+  - [x] 3.4 Verify: Smoke query returns seeded results
 
-- [ ] 4. Search API — GET `/api/search` with Redis cache-aside (TTL 60s)
+- [x] 4. Search API — GET `/api/search` with Redis cache-aside (TTL 60s)
   - [x] 4.1 Test-first: `@WebMvcTest` returns 400 if neither `q` nor `city` provided; 200 happy path
   - [x] 4.2 Slice/unit tests for cache: one test ensures cache miss → ES fetch → cache set; another ensures cache hit bypasses ES
   - [x] 4.3 Implement `SearchService` with keys `search:q:{normalized}` and `search:city:{city}`, TTL=60s; page size ≤20; normalization util
