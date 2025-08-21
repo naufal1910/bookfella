@@ -6,6 +6,7 @@ public final class KeyUtils {
     private KeyUtils() {}
 
     public static final int SEARCH_TTL_SECONDS = 60;
+    public static final int IDEMPOTENCY_TTL_SECONDS = 600;
 
     public static String normalizeQuery(String q) {
         if (q == null) return "";

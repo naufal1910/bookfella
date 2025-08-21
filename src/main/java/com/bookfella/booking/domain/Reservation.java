@@ -32,8 +32,8 @@ public class Reservation {
     @Column(name = "TOTAL_PRICE", precision = 12, scale = 2, nullable = false)
     private BigDecimal totalPrice;
 
-    // Use DB default 'CREATED' by not inserting the column explicitly
-    @Column(name = "STATUS", nullable = false, insertable = false)
+    // Persist status from application (default to 'CREATED' at service layer)
+    @Column(name = "STATUS", nullable = false)
     private String status;
 
     // Use DB default SYSTIMESTAMP
@@ -93,6 +93,10 @@ public class Reservation {
 
     public String getStatus() {
         return status;
+    }
+    
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public LocalDateTime getCreatedAt() {

@@ -29,3 +29,10 @@ resilience4j:
         sliding-window-size: 50
         permitted-number-of-calls-in-half-open-state: 5
         wait-duration-in-open-state: 10s
+
+spring:
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer

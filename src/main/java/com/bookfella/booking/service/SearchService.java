@@ -74,8 +74,8 @@ public class SearchService {
         // Cache the result
         try {
             String json = objectMapper.writeValueAsString(fresh);
-            redis.opsForValue().set(key, json);
-            redis.expire(key, Duration.ofSeconds(KeyUtils.SEARCH_TTL_SECONDS));
+            // single-call set with TTL to avoid extra RTT
+            redis.opsForValue().set(key, json, Duration.ofSeconds(KeyUtils.SEARCH_TTL_SECONDS));
         } catch (Exception ignored) {}
 
         return fresh;
