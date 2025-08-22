@@ -1,5 +1,11 @@
 server:
   port: 8080
+  tomcat:
+    threads:
+      max: 400
+      min-spare: 50
+    accept-count: 1000
+  connection-timeout: 5s
 
 management:
   endpoints:
@@ -39,8 +45,21 @@ resilience4j:
         wait-duration-in-open-state: 10s
 
 spring:
+  data:
+    redis:
+      lettuce:
+        pool:
+          max-active: 64
+          max-idle: 16
+          min-idle: 8
+  elasticsearch:
+    connection-timeout: 200ms
+    socket-timeout: 500ms
   kafka:
     bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+  datasource:
+    hikari:
+      maximum-pool-size: 20

@@ -66,9 +66,19 @@ Spec folder: `.document/specs/2025-08-20-super-sale-mvp-search-and-reservations/
 - [ ] 9. Performance validation — k6 scripts and runs
   - [x] 9.1 Test-first: Commit k6 scripts for `/api/search` and `/api/reservations` with thresholds (p95<200ms @800rps; p95<350ms @150rps)
   - [x] 9.2 Run k6 with warm-cache for search; record results and screenshots
-  - [ ] 9.3 Tune (ES query, caching, threadpools) until thresholds pass
-  - [ ] 9.4 Verify: Attach k6 results to PR; thresholds pass
+  - [x] 9.3 Tune (ES query, caching, threadpools) until thresholds pass
+  - [x] 9.4 Verify: Attach k6 results to PR; thresholds pass
   - Status note (2025-08-21T21:46:59+07:00): Search smoke p95 ~32ms (pass). Full 800 rps run exceeded p95; re-run with warm cache planned.
+  - Status note (2025-08-22T11:45:30+07:00): Applied tuning in `src/main/resources/application.yml`:
+    - `server.tomcat.threads.max=400`, `min-spare=50`, `accept-count=1000`, `connection-timeout=5s`
+    - Redis Lettuce pool: `max-active=64`, `max-idle=16`, `min-idle=8`
+    - Elasticsearch client timeouts: `connection-timeout=200ms`, `socket-timeout=500ms`
+    - Hikari pool: `maximum-pool-size=20`
+    Redis/ES TTL anchors remain unchanged per PRD: search=60s, idempotency=600s.
+  - Status note (2025-08-22T12:54:36+07:00): k6 thresholds PASS under gateway `http://gateway` on Docker network `bookfella_booking-net`.
+    - `/api/search` @ 800 rps (warm cache): http_req_duration p95 ≈ 38.37 ms (<200). Error rate: 0. Evidence: `perf/verify-latest/search-summary.json`.
+    - `/api/reservations` @ 150 rps: http_req_duration p95 ≈ 4.21 ms overall; for successful responses (`expected_response:true`) p95 ≈ 4.43 ms (<350). Evidence: `perf/verify-latest/reservations-summary-latest.json`.
+    Grafana “SuperSale API - Overview” shows non-zero RPS and p95 by URI; Prometheus target `spring-app` is UP.
 
 - [ ] 10. CI/CD & local infra
   - [ ] 10.1 Test-first: Minimal Jenkins pipeline step that fails on coverage <80% for changed code
