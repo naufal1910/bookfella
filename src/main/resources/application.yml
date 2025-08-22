@@ -10,10 +10,18 @@ management:
     prometheus:
       enabled: true
     health:
-      show-details: never
+      show-details: always
+  health:
+    probes:
+      enabled: true
   metrics:
     tags:
       application: booking
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
 
 resilience4j:
   retry:

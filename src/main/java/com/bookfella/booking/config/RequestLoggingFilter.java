@@ -74,12 +74,6 @@ public class RequestLoggingFilter extends OncePerRequestFilter {
             this.httpStatus = sc;
         }
 
-        @Override
-        public void setStatus(int sc, String sm) {
-            super.setStatus(sc, sm);
-            this.httpStatus = sc;
-        }
-
         public int getStatus() {
             return this.httpStatus;
         }

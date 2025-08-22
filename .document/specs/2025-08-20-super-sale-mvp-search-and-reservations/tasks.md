@@ -52,11 +52,16 @@ Spec folder: `.document/specs/2025-08-20-super-sale-mvp-search-and-reservations/
   - Status note (2025-08-22T02:01:40+07:00): Verified via gateway: `Cache-Control: public, max-age=60` on `/api/search`. k6 Docker run (`perf/rl-simple.js`) at ~300 rps observed both passes and limits: `created_201=4095` (~205 rps), `rate_limited=1906` (~95 rps), aligning with Nginx `rate=200r/s` and `burst=100 nodelay`. Evidence in `perf/rl-summary.json`.
 
 - [ ] 8. Observability — Prometheus, Grafana, structured logs
-  - [ ] 8.1 Test-first: Integration or unit test confirms `/actuator/prometheus` exposes HTTP server metrics; JSON log format outputs traceId/uri/status
-  - [ ] 8.2 Configure Micrometer Prometheus endpoint; Prom scrape config (every 5s); Grafana dashboard JSON with p95/p99, RPS, error %, JVM
-  - [ ] 8.3 Add request metrics (timers) for search/reservations; structured JSON logging (no PII)
-  - [ ] 8.4 Verify: Dashboards show traffic; metrics present
-  - Status note (2025-08-21T22:01:02+07:00): Prometheus endpoint exposes `http_server_requests_seconds`; Grafana dashboard verification pending.
+  - [x] 8.1 Test-first: Integration or unit test confirms `/actuator/prometheus` exposes HTTP server metrics; JSON log format outputs traceId/uri/status
+  - [x] 8.2 Configure Micrometer Prometheus endpoint; Prom scrape config (every 5s); Grafana dashboard JSON with p95/p99, RPS, error %, JVM
+  - [x] 8.3 Add request metrics (timers) for search/reservations; structured JSON logging (no PII)
+  - [x] 8.4 Verify: Dashboards show traffic; metrics present
+  - Status note (2025-08-22T03:29:57+07:00): Micrometer histograms enabled in `src/main/resources/application.yml`; Prometheus scrape configured in `ops/prometheus/prometheus.yml`. Grafana provisioning added:
+    - Datasource: `ops/grafana/provisioning/datasources/datasource.yml` → `http://prometheus:9090`
+    - Dashboard: `ops/grafana/dashboards/supersale.json` via provider `ops/grafana/provisioning/dashboards/dashboards.yml`
+    To verify: (1) `docker compose up -d --build app prometheus grafana`; (2) hit `http://localhost:8081/api/search?city=Tokyo` a few times; (3) Prom query `sum by (uri) (rate(http_server_requests_seconds_count[1m]))` shows data; (4) Grafana at `http://localhost:3000` (admin/admin) → dashboard "SuperSale API - Overview" shows p95/RPS/JVM panels with live traffic.
+
+  - Status note (2025-08-22T11:41:20+07:00): Verified. Grafana dashboard "SuperSale API - Overview" shows live panels: HTTP p95 latency by URI (includes `/api/search`), RPS by URI non-zero after sample traffic, and JVM heap. Prometheus target `spring-app` is UP and queries return results for RPS and p95. Evidence: screenshot attached; Prometheus queries executed locally.
 
 - [ ] 9. Performance validation — k6 scripts and runs
   - [x] 9.1 Test-first: Commit k6 scripts for `/api/search` and `/api/reservations` with thresholds (p95<200ms @800rps; p95<350ms @150rps)
