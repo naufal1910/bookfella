@@ -1,0 +1,24 @@
+<configuration>
+  <!-- Default console appender for normal app logs -->
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %-5level [%thread] %logger - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- JSON-only console appender for access logs (message is already JSON) -->
+  <appender name="JSON_ACCESS" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- Route http.access logs to JSON appender and prevent duplication to root -->
+  <logger name="http.access" level="INFO" additivity="false">
+    <appender-ref ref="JSON_ACCESS"/>
+  </logger>
+
+  <root level="INFO">
+    <appender-ref ref="CONSOLE"/>
+  </root>
+</configuration>

@@ -1,0 +1,1 @@
+{"status":"success","data":{"resultType":"vector","result":[{"metric":{"uri":"/actuator/prometheus"},"value":[1755837315.457,"0.20001818347122463"]},{"metric":{"uri":"/actuator/health"},"value":[1755837315.457,"0"]},{"metric":{"uri":"/api/search"},"value":[1755837315.457,"0"]},{"metric":{"uri":"/actuator/health/**"},"value":[1755837315.457,"0"]}]}}
