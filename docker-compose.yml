@@ -1,0 +1,114 @@
+networks:
+  booking-net:
+    driver: bridge
+
+volumes:
+  esdata: {}
+  redpanda-data: {}
+  prometheus-data: {}
+  grafana-data: {}
+
+services:
+  app:
+    build: .
+    image: bookfella/booking:dev
+    container_name: app
+    environment:
+      - SPRING_DATA_REDIS_HOST=redis
+      - SPRING_ELASTICSEARCH_URIS=http://es:9200
+      - KAFKA_BOOTSTRAP=redpanda:9092
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+      - es
+      - redpanda
+    networks:
+      - booking-net
+
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: gateway
+    ports:
+      - "8081:80"
+    volumes:
+      - ./ops/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - app
+    networks:
+      - booking-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    networks:
+      - booking-net
+
+  es:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.1
+    container_name: es
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    networks:
+      - booking-net
+
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:v24.1.7
+    container_name: redpanda
+    command: [
+      "redpanda", "start",
+      "--overprovisioned",
+      "--smp", "1",
+      "--memory", "1G",
+      "--reserve-memory", "0M",
+      "--node-id", "0",
+      "--kafka-addr", "0.0.0.0:9092",
+      "--advertise-kafka-addr", "redpanda:9092",
+      "--set", "redpanda.auto_create_topics_enabled=true"
+    ]
+    ports:
+      - "9092:9092"
+    volumes:
+      - redpanda-data:/var/lib/redpanda/data
+    networks:
+      - booking-net
+
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./ops/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    networks:
+      - booking-net
+
+  grafana:
+    image: grafana/grafana:10.4.3
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./ops/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./ops/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./ops/grafana/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      - prometheus
+    networks:
+      - booking-net
