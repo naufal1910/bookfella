@@ -24,21 +24,34 @@ Key anchors (see `src/main/java/com/bookfella/booking/util/KeyUtils.java` and `o
 ```mermaid
 flowchart LR
   CLIENT[[Client]] -->|HTTP| GW[Gateway (Nginx) :8081]
-  GW -->|GET /api/search (Cache-Control: 60s)| APP[Spring Boot App :8080]
-  GW -->|POST /api/reservations (limit_req 200 r/s; burst=100 nodelay)| APP
+  GW -->|GET /api/search (Cache-Control max-age 60s)| APP[Spring Boot App :8080]
+  GW -->|POST /api/reservations (limit_req 200 r/s, burst=100 nodelay)| APP
 
   %% Search path (cache-aside)
   APP -->|Cache-aside get/set TTL 60s| REDIS[(Redis :6379)]
   APP -->|Query hotels| ES[(Elasticsearch :9200)]
 
   %% Reservation path (idempotency + DB write)
-  APP -->|SET idem:{key} NX EX 600| REDIS
-  REDIS -->|exists → 409 Conflict| APP
+  APP -->|SET idem_key NX EX 600| REDIS
+  REDIS -->|exists -> 409 Conflict| APP
   APP -->|JPA write/read| DB[(DB: H2 Oracle mode)]
 
   %% Observability
-  PROM[Prometheus :9090] -->|scrape /actuator/prometheus (5s)| APP
+  PROM[Prometheus :9090] -->|scrape /actuator/prometheus every 5s| APP
   GRAF[Grafana :3000] -->|PromQL| PROM
+```
+
+If Mermaid doesn’t render in your viewer, see the PNG fallback:
+![Architecture](docs/images/architecture.png)
+
+To regenerate the PNG from the source Mermaid file `docs/images/architecture.mmd`, use mermaid-cli (Docker variant shown):
+
+```bash
+# Generate PNG via Docker mermaid-cli (Windows paths)
+MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL="*" docker run --rm \
+  -v d:/ai/bookfella/docs/images:/data \
+  ghcr.io/mermaid-js/mermaid-cli:10.9.1 \
+  mmdc -i /data/architecture.mmd -o /data/architecture.png --puppeteerConfigFile /usr/src/app/puppeteer-config.json || true
 ```
 
 Legend and references:
