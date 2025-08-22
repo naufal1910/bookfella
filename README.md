@@ -21,43 +21,7 @@ Key anchors (see `src/main/java/com/bookfella/booking/util/KeyUtils.java` and `o
 - Ports: App 8080, Gateway 8081, Redis 6379, ES 9200, Kafka 9092, Prometheus 9090, Grafana 3000
 
 ## Architecture at a glance
-```mermaid
-flowchart LR
-  CLIENT[[Client]] -->|HTTP| GW[Gateway (Nginx) :8081]
-  GW -->|GET /api/search (Cache-Control max-age 60s)| APP[Spring Boot App :8080]
-  GW -->|POST /api/reservations (limit_req 200 r/s, burst=100 nodelay)| APP
-
-  %% Search path (cache-aside)
-  APP -->|Cache-aside get/set TTL 60s| REDIS[(Redis :6379)]
-  APP -->|Query hotels| ES[(Elasticsearch :9200)]
-
-  %% Reservation path (idempotency + DB write)
-  APP -->|SET idem_key NX EX 600| REDIS
-  REDIS -->|exists -> 409 Conflict| APP
-  APP -->|JPA write/read| DB[(DB: H2 Oracle mode)]
-
-  %% Observability
-  PROM[Prometheus :9090] -->|scrape /actuator/prometheus every 5s| APP
-  GRAF[Grafana :3000] -->|PromQL| PROM
-```
-
-If Mermaid doesn’t render in your viewer, see the PNG fallback:
-![Architecture](docs/images/architecture.png)
-
-To regenerate the PNG from the source Mermaid file `docs/images/architecture.mmd`, use mermaid-cli (Docker variant shown):
-
-```bash
-# Generate PNG via Docker mermaid-cli (Windows paths)
-MSYS_NO_PATHCONV=1 MSYS2_ARG_CONV_EXCL="*" docker run --rm \
-  -v d:/ai/bookfella/docs/images:/data \
-  ghcr.io/mermaid-js/mermaid-cli:10.9.1 \
-  mmdc -i /data/architecture.mmd -o /data/architecture.png --puppeteerConfigFile /usr/src/app/puppeteer-config.json || true
-```
-
-Legend and references:
-- __Nginx__: `ops/nginx/nginx.conf` (rate limit and cache headers)
-- __Prometheus__: `ops/prometheus/prometheus.yml` (scrapes app:8080 every 5s)
-- __Redis keys__: `search:city:{city}`, `search:q:{normalized}`, `idem:{key}`; TTLs in `KeyUtils`
+![Architecture](docs/images/Architecture_diagram.png)
 
 ## Quickstart
 Prereqs: Docker Desktop, Java 21, Maven 3.9+
